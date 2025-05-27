@@ -1,9 +1,13 @@
-import React from 'react'
-
+import AddPostForm from "./feactures/posts/AddPostForm"
+import PostsList from "./feactures/posts/PostsList"
 const App = () => {
   return (
-    <div>App</div>
+    <main>
+      <AddPostForm/>
+      <PostsList/>
+    </main>
   )
+      
 }
 
 export default App
