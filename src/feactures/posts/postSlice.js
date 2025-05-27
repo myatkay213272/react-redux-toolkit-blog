@@ -6,19 +6,40 @@ const initialState = [
     id: 1,
     title: 'Learning Redux Toolkit',
     content: 'Redux Toolkit makes writing Redux code easier.',
-    date : sub(new Date(),{minutes : 10}).toISOString()
+    date : sub(new Date(),{minutes : 10}).toISOString(),
+    reactions : {
+      thumbsUp : 0,
+      wow : 0,
+      heart : 0,
+      rocket :0,
+      coffee:0
+    }
   },
   {
     id: 2,
     title: 'React with Redux',
     content: 'React works well with Redux for managing state.',
-    date : sub(new Date(),{minutes : 5}).toISOString()
+    date : sub(new Date(),{minutes : 5}).toISOString(),
+    reactions : {
+      thumbsUp : 0,
+      wow : 0,
+      heart : 0,
+      rocket :0,
+      coffee:0
+    }
   },
   {
     id: 3,
     title: 'Writing Better Code',
     content: 'Keep your code simple and clean.',
-    date : sub(new Date(),{minutes : 15}).toISOString()
+    date : sub(new Date(),{minutes : 15}).toISOString(),
+    reactions : {
+      thumbsUp : 0,
+      wow : 0,
+      heart : 0,
+      rocket :0,
+      coffee:0
+    }
 
   }
 ];
@@ -39,9 +60,23 @@ const postSlice = createSlice({
                 title,
                 content,
                 date : new Date().toISOString(),
-                userId
+                userId,
+                reactions : {
+                  thumbsUp : 0,
+                  wow : 0,
+                  heart : 0,
+                  rocket :0,
+                  coffee:0
+                }
               }
             }
+          }
+        },
+        reactionAdded(state,action){
+          const {postId,reaction} = action.payload
+          const existingPost = state.find(post=>post.id === postId)
+          if(existingPost){
+            existingPost.reactions[reaction]++
           }
         }
     }
@@ -49,6 +84,6 @@ const postSlice = createSlice({
 
 export const selectAllPosts = (state)=>state.posts;
 
-export const {postAdded} = postSlice.actions
+export const {postAdded,reactionAdded} = postSlice.actions
 
 export default postSlice.reducer
