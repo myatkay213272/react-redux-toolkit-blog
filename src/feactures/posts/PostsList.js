@@ -20,9 +20,9 @@ const PostsList = () => {
 
   let content 
   if(postsStatus === 'loading'){
-    content =<p>'Loading...'</p>
+    content =<p>Loading...</p>
   }else if(postsStatus === 'succeeded'){
-    const orderedPosts = posts.slice().sort((a,b)=>b.data.localeCompare(a.date))
+    const orderedPosts = posts.slice().sort((a,b)=>b.date.localeCompare(a.date))
     content = orderedPosts.map(post=><PostExcerpt key={post.id} post={post}/>)
   }else if(postsStatus === 'failed'){
     content = <p>{error}</p>
