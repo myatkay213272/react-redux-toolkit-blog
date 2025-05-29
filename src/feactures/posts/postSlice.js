@@ -78,7 +78,7 @@ export const updatePost = createAsyncThunk('posts/updatePost',async(initialPost)
     const response = await axios.put(`${POSTS_URL}/${id}`,initialPost)
     return response.data
   }catch(err){
-    return err.message
+    return initialPost  //only for testing Redux!!
   }
 })
 
@@ -186,6 +186,17 @@ const postSlice = createSlice({
           const posts = state.posts.filter(post=>post.id !== id)
           state.posts = [...posts,action.payload]
         })
+        .addCase(deletePost.fulfilled,(state,action)=>{
+          if(!action.payload?.id){
+            console.log('Delete could not complete')
+            console.log(action.payload)
+            return
+          }
+            const {id} = action.payload
+            const posts = state.posts.filter(post=>post.id !== id)
+            state.posts = posts
+        })
+       
     }
 })
 

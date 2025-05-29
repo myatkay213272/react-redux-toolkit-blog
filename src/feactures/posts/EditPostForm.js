@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { selectPostById, updatePost } from './postSlice'
+import { deletePost, selectPostById, updatePost } from './postSlice'
 import { selectAllUsers } from '../users/userSlice'
 
 const EditPostForm = () => {
@@ -20,9 +20,12 @@ const EditPostForm = () => {
 
   if (!post) {
     return (
-      <section className="container mt-4">
-        <h2 className="text-danger">Post not found</h2>
-      </section>
+      <div className="container mt-4">
+        <div className="alert alert-danger" role="alert">
+          <h4 className="alert-heading">Post not found</h4>
+          <p>The post you're looking for doesn't exist.</p>
+        </div>
+      </div>
     )
   }
 
@@ -30,34 +33,41 @@ const EditPostForm = () => {
   const onContentChange = (e) => setContent(e.target.value)
   const onAuthorChange = (e) => setUserId(e.target.value)
 
-  const canSave = [title,content,userId].every(Boolean) && requestStatus === 'idle'
+  const canSave = [title, content, userId].every(Boolean) && requestStatus === 'idle'
 
-  const onSavePostClicked = (e)=>{
+  const onSavePostClicked = async (e) => {
     e.preventDefault()
-    if(canSave){
-        try{
-            setRequestStatus('pending')
-            dispatch(updatePost(
-              {
-                id : post.id,
-                title ,
-                body : content,
-                userId,
-                reactions : post.reactions
-              }
-            )).unwrap()
-            setTitle('')
-            setContent('')
-            setUserId('')
-            navigate(`/post/${postId}`)
-        }catch(err){
-          console.error('Failed to save the post',err)
-        }finally{
-          setRequestStatus('idle')
-        }
+    if (canSave) {
+      try {
+        setRequestStatus('pending')
+        await dispatch(updatePost({
+          id: post.id,
+          title,
+          body: content,
+          userId,
+          reactions: post.reactions
+        })).unwrap()
+
+        navigate(`/post/${postId}`)
+      } catch (err) {
+        console.error('Failed to save the post:', err)
+      } finally {
+        setRequestStatus('idle')
+      }
     }
   }
-  
+
+  const onDeletePostClick = async () => {
+    try {
+      setRequestStatus('pending')
+      await dispatch(deletePost({ id: post.id })).unwrap()
+      navigate('/')
+    } catch (err) {
+      console.error('Failed to delete the post:', err)
+    } finally {
+      setRequestStatus('idle')
+    }
+  }
 
   const userOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
@@ -67,49 +77,58 @@ const EditPostForm = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Edit Post</h2>
-      <form onSubmit={onSavePostClicked}>
-        <div className="mb-3">
-          <label htmlFor="postTitle" className="form-label">Post Title</label>
-          <input
-            type="text"
-            className="form-control"
-            id="postTitle"
-            value={title}
-            onChange={onTitleChange}
-            placeholder="Enter post title"
-          />
-        </div>
+      <div className="card shadow">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Edit Post</h2>
+          <form onSubmit={onSavePostClicked}>
+            <div className="mb-3">
+              <label htmlFor="postTitle" className="form-label">Post Title</label>
+              <input
+                type="text"
+                id="postTitle"
+                className="form-control"
+                value={title}
+                onChange={onTitleChange}
+                placeholder="Enter post title"
+              />
+            </div>
 
-        <div className="mb-3">
-          <label htmlFor="postAuthor" className="form-label">Author</label>
-          <select
-            id="postAuthor"
-            className="form-select"
-            value={userId}
-            onChange={onAuthorChange}
-          >
-            <option value="">Select Author</option>
-            {userOptions}
-          </select>
-        </div>
+            <div className="mb-3">
+              <label htmlFor="postAuthor" className="form-label">Author</label>
+              <select
+                id="postAuthor"
+                className="form-select"
+                value={userId}
+                onChange={onAuthorChange}
+              >
+                <option value="">Select Author</option>
+                {userOptions}
+              </select>
+            </div>
 
-        <div className="mb-3">
-          <label htmlFor="postContent" className="form-label">Content</label>
-          <textarea
-            className="form-control"
-            id="postContent"
-            rows="5"
-            value={content}
-            onChange={onContentChange}
-            placeholder="Enter post content"
-          ></textarea>
-        </div>
+            <div className="mb-3">
+              <label htmlFor="postContent" className="form-label">Content</label>
+              <textarea
+                id="postContent"
+                className="form-control"
+                rows="5"
+                value={content}
+                onChange={onContentChange}
+                placeholder="Enter post content"
+              ></textarea>
+            </div>
 
-        <button type="submit" className="btn btn-primary" disabled={!canSave}>
-          Save Changes
-        </button>
-      </form>
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-primary" disabled={!canSave}>
+                Save Changes
+              </button>
+              <button type="button" className="btn btn-danger" onClick={onDeletePostClick}>
+                Delete Post
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }
