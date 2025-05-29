@@ -1,19 +1,27 @@
-import PostAuthor from './PostAuthor';
-import TimeAgo from './TimeAgo';
-import ReactionButton from './ReactionButton';
+import PostAuthor from './PostAuthor'
+import TimeAgo from './TimeAgo'
+import ReactionButton from './ReactionButton'
+import { Link } from 'react-router-dom'
 
-const PostExcerpt = ({post}) => {
+const PostExcerpt = ({ post }) => {
   return (
-    <article className="card mb-3 shadow-sm">
+    <article className="card mb-4 shadow-sm">
       <div className="card-body">
-        <h5 className="card-title">{post.title}</h5>
-        <p className="card-text">{post.body}</p>
-        <div className="text-muted small">
-          <PostAuthor userId={post.userId} />
-          <TimeAgo timestamp={post.date} />
-          {/* <TimeAgo timestamp="2025-05-27T09:30:00Z" /> */}
+        <h2 className="card-title">{post.title}</h2>
+        <p className="card-text">
+          {post.body.substring(0, 40)}...
+        </p>
+
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <Link to={`post/${post.id}`} className="btn btn-sm btn-primary">
+            View Post
+          </Link>
+          <small className="text-muted">
+            <PostAuthor userId={post.userId} /> | <TimeAgo timestamp={post.date} />
+          </small>
         </div>
-        <ReactionButton post={post}/>
+
+        <ReactionButton post={post} />
       </div>
     </article>
   )

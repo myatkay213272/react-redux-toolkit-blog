@@ -30,7 +30,6 @@ const PostsList = () => {
 
   return (
     <section className="container mt-4">
-      <h2 className="mb-4">Posts</h2>
       {content}
     </section>
   );
