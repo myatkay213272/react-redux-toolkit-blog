@@ -6,11 +6,11 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { fetchUsers } from './feactures/users/userSlice';
-import { fetchPosts } from './feactures/posts/postSlice';
+import { extendedApiSlice } from './feactures/posts/postSlice';
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
 
+store.dispatch(extendedApiSlice.endpoints.getPosts.initiate())
 store.dispatch(fetchUsers())
-store.dispatch(fetchPosts())
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

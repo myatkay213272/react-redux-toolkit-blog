@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import postsReducer from '../feactures/posts/postSlice'
+import { apiSlice } from "../feactures/api/apiSlice";
 import userReducer from '../feactures/users/userSlice'
 
 export const store = configureStore({
     reducer :{
-        posts : postsReducer,
+        [apiSlice.reducerPath]:apiSlice.reducer,
         users :userReducer
-    }
+    },
+    middleware : getDefaultMiddleware=>
+        getDefaultMiddleware().concat(apiSlice.middleware)
 })
