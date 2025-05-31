@@ -75,22 +75,22 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       //   {type : 'Post' , id : 'LIST'},
       //   ...result.ids.map(id => ({type : 'Post',id }))
       // ]
-      transformResponse: responseData => {
+    transformResponse : responseData => {
   let min = 1;
   const loadedPosts = responseData.map(post => {
-    if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-    if (!post?.reactions)
-      post.reactions = {
-        thumbsUp: 0,
-        wow: 0,
-        heart: 0,
-        rocket: 0,
-        coffee: 0
-      };
+    if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString()
+    if (!post?.reactions) post.reactions = {
+      thumbsUp: 0,
+      wow: 0,
+      heart: 0,
+      rocket: 0,
+      coffee: 0
+    }
     return post;
-  });
-  return postsAdapter.setAll(initialState, loadedPosts);
+  })
+  return postsAdapter.setAll(initialState, loadedPosts)
 },
+
 
 providesTags: (result, error, arg) =>
   result
@@ -103,7 +103,7 @@ providesTags: (result, error, arg) =>
       transformErrorResponse : responseData=>{
         let min = 1;
         const loadedPosts = responseData.map(post=>{
-          if(!post?.adate) post.date = sub(new Date(),{minutes :min++}).toISOString()
+          if(!post?.date) post.date = sub(new Date(),{minutes :min++}).toISOString()
           if(!post?.reactions) post.reactions = {
             thumbsUp : 0,
             wow : 0,
@@ -121,13 +121,14 @@ providesTags: (result, error, arg) =>
       //     ...result.ids.map(id =>({type:'Post',id }))
       //   ]
       // }
-      providesTags: (result, error, arg) =>
-    result
-      ? [
-          { type: 'Post', id: 'LIST' },
-          ...result.ids.map(id => ({ type: 'Post', id }))
-        ]
-      : [{ type: 'Post', id: 'LIST' }]
+     providesTags: (result, error, arg) =>
+  result
+    ? [
+        { type: 'Post', id: 'LIST' },
+        ...result.ids.map(id => ({ type: 'Post', id }))
+      ]
+    : [{ type: 'Post', id: 'LIST' }]
+
     }),
     addNewPost : builder.mutation({
       query : initialPost =>({
@@ -205,7 +206,11 @@ export const {
   useUpdatePostMutation,
   useDeletePostMutation,
   useAddReactionMutation
-}= extendedApiSlice
+} = extendedApiSlice;
+
+// Inside postSlice.js
+console.log("✅ Hook test:", typeof useGetPostsQuery); // should log: 'function'
+
 
 //return query result object
 export const selectPostsResult = extendedApiSlice.endpoints.getPosts.select()
